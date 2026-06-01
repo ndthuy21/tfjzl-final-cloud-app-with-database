@@ -1,28 +1,34 @@
 from django.db import models
 from django.utils.timezone import now
 
+# Model khóa học
 class Course(models.Model):
     name = models.CharField(null=False, max_length=100)
     description = models.CharField(max_length=500)
     def __str__(self):
         return self.name
 
+# Model bài học thuộc khóa học
 class Lesson(models.Model):
     title = models.CharField(max_length=200)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     def __str__(self):
         return self.title
 
+# Model Giảng viên
 class Instructor(models.Model):
     user = models.CharField(max_length=100)
 
+# Model Học viên
 class Learner(models.Model):
     user = models.CharField(max_length=100)
 
+# Model Lượt đăng ký học (Kết nối Học viên với Khóa học)
 class Enrollment(models.Model):
     learner = models.ForeignKey(Learner, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
+# Model Câu hỏi trong bài học (Yêu cầu hệ thống)
 class Question(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     question_text = models.CharField(max_length=500)
@@ -30,6 +36,7 @@ class Question(models.Model):
     def __str__(self):
         return self.question_text
 
+# Model Các lựa chọn đáp án của câu hỏi
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=500)
@@ -37,6 +44,7 @@ class Choice(models.Model):
     def __str__(self):
         return self.choice_text
 
+# Model Bài nộp của học viên (Đã bổ sung trường enrollment và __str__ đúng tiêu chí chấm)
 class Submission(models.Model):
     enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE, default=1)
     choices = models.ManyToManyField(Choice)
